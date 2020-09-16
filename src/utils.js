@@ -24,12 +24,12 @@ function normalizeProp(prop) {
 
 function normalizeValue(prop, value) {
   // leave custom properties alone
-  if (typeof value === 'number' && !prop.startsWith('--')) {
+  if (value && typeof value === 'number' && !prop.startsWith('--')) {
     if (prop === 'fontSize') return `${value / BASE_FONT_SIZE_PX}rem`;
     if (!UNITLESS_NUMBERS.includes(prop)) return `${value}px`;
+  } else if (Array.isArray(value)) {
+    return value.slice().join(' ');
   }
-
-  if (Array.isArray(value)) return value.slice().join(' ');
 
   return value;
 }
