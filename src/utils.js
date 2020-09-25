@@ -34,11 +34,18 @@ function normalizeValue(prop, value) {
   return value;
 }
 
+// Avoid vowels so we don't make words.
+const VOWEL_MAP = {a: 'w', e: 'x', i: 'z', o: '_', u: '-'};
+
+function base32NoVowels(num) {
+  return num.toString(32).replace(/[aeiou]/g, m => VOWEL_MAP[m[0]]);
+}
+
 // Class can't start with number
 const CLASS_PREFIX = 'c';
 
 function getClass(...args) {
-  return CLASS_PREFIX + hash(JSON.stringify(args)).toString(36);
+  return CLASS_PREFIX + base32NoVowels(hash(JSON.stringify(args)));
 }
 
 /**
@@ -158,10 +165,10 @@ function normalizePseudoElements(string) {
 function minifyProperty(name) {
   const hyphenName = normalizeProp(name);
   if (cssProperties.includes(hyphenName)) {
-    return cssProperties.indexOf(hyphenName).toString(36);
+    return base32NoVowels(cssProperties.indexOf(hyphenName));
   }
 
-  return hash(hyphenName).toString(36);
+  return base32NoVowels(hash(hyphenName));
 }
 
 module.exports = {
