@@ -30,12 +30,13 @@ styles('default');
   expect(styles).toMatchSnapshot();
 });
 
-it('does not converts to pixels', () => {
+it('does not convert to pixels', () => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
   default: {
-    opacity: 1
+    opacity: 1,
+    '--custom': 2
   }
 });
 styles('default');
@@ -120,6 +121,22 @@ const styles = style9.create({
 styles('default');
   `;
   const { styles } = compile(input);
+
+  expect(styles).toMatchSnapshot();
+});
+
+it('kebab-cases non-custom property names', () => {
+  const input = `
+import style9 from 'style9';
+const styles = style9.create({
+  default: {
+    borderTopColor: 'blue',
+    '--customProp': 'red'
+  }
+});
+styles('default');
+  `;
+  const { code, styles } = compile(input);
 
   expect(styles).toMatchSnapshot();
 });

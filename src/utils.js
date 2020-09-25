@@ -12,8 +12,19 @@ function isNestedStyles(item) {
 
 const BASE_FONT_SIZE_PX = 16;
 
+function camelToHyphen(string) {
+  return string.replace(/[A-Z]/g, c => `-${c.toLowerCase()}`);
+}
+
+function normalizeProp(prop) {
+  // leave custom properties alone
+  if (prop.startsWith('--')) return prop;
+  return camelToHyphen(prop);
+}
+
 function normalizeValue(prop, value) {
-  if (typeof value === 'number' ) {
+  // leave custom properties alone
+  if (typeof value === 'number' && !prop.startsWith('--')) {
     if (prop === 'fontSize') return `${value / BASE_FONT_SIZE_PX}rem`;
     if (!UNITLESS_NUMBERS.includes(prop)) return `${value}px`;
   }
@@ -30,10 +41,6 @@ function getClass(...args) {
   return CLASS_PREFIX + hash(JSON.stringify(args)).toString(36);
 }
 
-function camelToHyphen(string) {
-  return string.replace(/[A-Z]/g, c => `-${c.toLowerCase()}`);
-}
-
 /**
  * Resolve the value of a node path
  */
@@ -44,7 +51,7 @@ function resolvePathValue(path) {
 }
 
 function formatCssRule(prop, value) {
-  return `${camelToHyphen(prop)}:${normalizeValue(prop, value)}`;
+  return `${normalizeProp(prop)}:${normalizeValue(prop, value)}`;
 }
 
 function expandProperty(prop) {
@@ -149,7 +156,7 @@ function normalizePseudoElements(string) {
 }
 
 function minifyProperty(name) {
-  const hyphenName = camelToHyphen(name);
+  const hyphenName = normalizeProp(name);
   if (cssProperties.includes(hyphenName)) {
     return cssProperties.indexOf(hyphenName).toString(36);
   }
