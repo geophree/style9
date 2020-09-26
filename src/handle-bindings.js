@@ -119,10 +119,7 @@ function replaceUseCalls(varDec, classes) {
   for (const use of uses) {
     if (use.parentPath.isCallExpression() && use.parent.callee === use.node) {
       const args = normalizeArguments(use);
-      args.forEach(arg => {
-        if (typeof arg === 'string') names.add(arg);
-        else names.add(arg.value);
-      });
+      args.forEach(arg => names.add(arg.value));
       const expr = generateExpression(args, flatClasses);
       use.parentPath.replaceWith(expr);
     } else if (use.parentPath.isMemberExpression()) {

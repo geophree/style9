@@ -18,7 +18,7 @@ const styles = {
     paddingLeft: \\"c17qt1w7\\"
   }
 };
-\\"c1xiyxc9 \\" + (\\"c1wgquni \\" + (\\"c1s7zyp4 \\" + \\"c17qt1w7 \\"));"
+\\"c1xiyxc9 c1wgquni c1s7zyp4 c17qt1w7 \\";"
 `;
 
 exports[`does not override longhand 2`] = `".c1xiyxc9{padding-top:1rem}.c1wgquni{padding-right:1rem}.c1s7zyp4{padding-bottom:1rem}.c17qt1w7{padding-left:2rem}"`;
@@ -33,7 +33,7 @@ const styles = {
     paddingLeft: \\"cc3nx7y\\"
   }
 };
-\\"c1xiyxc9 \\" + (\\"c1wgquni \\" + (\\"c1s7zyp4 \\" + \\"cc3nx7y \\"));"
+\\"c1xiyxc9 c1wgquni c1s7zyp4 cc3nx7y \\";"
 `;
 
 exports[`expands shorthand 2`] = `".c1xiyxc9{padding-top:1rem}.c1wgquni{padding-right:1rem}.c1s7zyp4{padding-bottom:1rem}.cc3nx7y{padding-left:1rem}"`;

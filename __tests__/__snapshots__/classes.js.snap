@@ -24,7 +24,7 @@ const styles = {
     color: \\"cyyg6ey\\"
   }
 };
-\\"cyyg6ey \\" + (foo ? \\"cu2kwdz \\" : \\"\\");"
+(foo ? \\"cu2kwdz \\" : \\"\\") + \\"cyyg6ey \\";"
 `;
 
 exports[`moves test 1`] = `
@@ -80,7 +80,7 @@ const styles = {
     color: \\"cyyg6ey\\"
   }
 };
-\\"cyyg6ey \\" + \\"cu2kwdz \\";"
+\\"cyyg6ey cu2kwdz \\";"
 `;
 
 exports[`supports destructuring assignment 1`] = `

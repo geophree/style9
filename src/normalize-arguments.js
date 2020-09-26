@@ -18,7 +18,7 @@ function normalizeArguments(use) {
         };
       });
     } else if (t.isStringLiteral(arg)) {
-      return arg.value;
+      return { value: arg.value };
     } else if (t.isLogicalExpression(arg, { operator: '&&' })) {
       t.assertStringLiteral(arg.right);
 
@@ -31,15 +31,14 @@ function normalizeArguments(use) {
       t.assertStringLiteral(arg.alternate);
 
       return [
-        arg.alternate.value,
+        { value: arg.alternate.value },
         {
           test: extractNode(use, arg.test),
           value: arg.consequent.value
         }
       ];
-    } else {
-      throw argPath.buildCodeFrameError(`Unsupported type ${arg.type}`);
     }
+    throw argPath.buildCodeFrameError(`Unsupported type ${arg.type}`);
   });
 }
 
