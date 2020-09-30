@@ -33,6 +33,24 @@ styles(foo() && 'default');
   expect(code).toMatchSnapshot();
 });
 
+it('and', async () => {
+  const input = `
+import style9 from 'style9';
+const styles = style9.create({
+  default: {
+    color: 'blue',
+    opacity: 1
+  },
+  red: {
+    color: 'red'
+  }
+});
+styles('default', foo && 'red');
+  `;
+  const { code } = compile(input);
+  expect(code).toMatchSnapshot();
+});
+
 it('ternary', () => {
   const input = `
 import style9 from 'style9';
@@ -45,7 +63,7 @@ const styles = style9.create({
     color: 'red'
   }
 });
-styles(foo ? 'default' : 'red');
+styles(foo ? 'red' : 'default');
   `;
   const { code } = compile(input);
   expect(code).toMatchSnapshot();

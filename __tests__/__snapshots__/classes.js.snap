@@ -1,5 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`and 1`] = `
+"import style9 from 'style9';
+const styles = {
+  default: {
+    color: \\"c1r9f2e5\\",
+    opacity: \\"cu2kwdz\\"
+  },
+  red: {
+    color: \\"cyyg6ey\\"
+  }
+};
+(foo ? \\"cyyg6ey \\" : \\"c1r9f2e5 \\") + \\"cu2kwdz \\";"
+`;
+
 exports[`hoists function call 1`] = `
 "import style9 from 'style9';
 const styles = {
@@ -168,5 +182,5 @@ const styles = {
     color: \\"cyyg6ey\\"
   }
 };
-(foo ? \\"c1r9f2e5 \\" : \\"cyyg6ey \\") + (foo ? \\"cu2kwdz \\" : \\"\\");"
+(foo ? \\"cyyg6ey \\" : \\"c1r9f2e5 \\") + \\"cu2kwdz \\";"
 `;
