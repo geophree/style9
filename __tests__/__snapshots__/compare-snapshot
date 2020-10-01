@@ -1,4 +1,0 @@
-#!/bin/bash
-diff \
-<(cat $1.mjs.md | sed 's/\(␊\|^>.*\|##.*\|^ \+\)//g' | sed 's/`//g' | sed 's/'"'"'/"/g' | sed -r '/^\s*$/d') \
-<(cat $1.js.snap | sed 's/\(^export.*= `\|\\\\\|`;\|^ \+\)//g' | sed 's/^"import/import/' | sed 's/;"$/;/' | sed 's/'"'"'/"/g' | sed -r '/^\s*$/d')
