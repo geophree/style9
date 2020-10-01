@@ -1,7 +1,7 @@
-/* eslint-env jest */
-const compile = require('./compile.js');
+import test from 'ava';
+import { compile } from './_helpers.mjs';
 
-it('compiles', () => {
+test('compiles', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -12,10 +12,10 @@ const styles = style9.create({
 styles('default');
   `;
   const { code } = compile(input);
-  expect(code).not.toBe(input);
+  t.notDeepEqual(code, input);
 });
 
-it('converts to pixels', () => {
+test('converts to pixels', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -27,10 +27,10 @@ styles('default');
   `;
   const { styles } = compile(input);
 
-  expect(styles).toMatchSnapshot();
+  t.snapshot(styles);
 });
 
-it('does not converts to pixels', () => {
+test('does not converts to pixels', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -42,10 +42,10 @@ styles('default');
   `;
   const { styles } = compile(input);
 
-  expect(styles).toMatchSnapshot();
+  t.snapshot(styles);
 });
 
-it('expands shorthand', () => {
+test('expands shorthand', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -57,11 +57,11 @@ styles('default');
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('does not override longhand', () => {
+test('does not override longhand', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -74,11 +74,11 @@ styles('default');
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('converts fontSize pixels', () => {
+test('converts fontSize pixels', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -90,10 +90,10 @@ styles('default');
   `;
   const { styles } = compile(input);
 
-  expect(styles).toMatchSnapshot();
+  t.snapshot(styles);
 });
 
-it('accepts an array', () => {
+test('accepts an array', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -105,10 +105,10 @@ styles('default');
   `;
   const { styles } = compile(input);
 
-  expect(styles).toMatchSnapshot();
+  t.snapshot(styles);
 });
 
-it('supports constants', () => {
+test('supports constants', t => {
   const input = `
 import style9 from 'style9';
 const BLUE = 'blue';
@@ -121,10 +121,10 @@ styles('default');
   `;
   const { styles } = compile(input);
 
-  expect(styles).toMatchSnapshot();
+  t.snapshot(styles);
 });
 
-it('removes unused styles', () => {
+test('removes unused styles', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -135,11 +135,11 @@ const styles = style9.create({
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('supports static bracket access', () => {
+test('supports static bracket access', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -154,11 +154,11 @@ styles['default']
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('supports dynamic bracket access', () => {
+test('supports dynamic bracket access', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -173,11 +173,11 @@ styles[blue]
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('supports arrow function', () => {
+test('supports arrow function', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -189,11 +189,11 @@ const get = state => styles(state && 'default');
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('does not work without declaration', () => {
+test('does not work without declaration', t => {
   const input = `
 import style9 from 'style9';
 style9.create({
@@ -202,10 +202,10 @@ style9.create({
   }
 });
   `;
-  expect(() => compile(input)).toThrow();
+  t.throws(() => compile(input));
 });
 
-it('only supports Member- and CallExpression on styles', () => {
+test('only supports Member- and CallExpression on styles', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -215,13 +215,13 @@ const styles = style9.create({
 });
 foo(styles);
   `;
-  expect(() => compile(input)).toThrow();
+  t.throws(() => compile(input));
 });
 
-it('throws on non-existing property', () => {
+test('throws on non-existing property', t => {
   const input = `
 import style9 from 'style9';
 style9.foo;
   `;
-  expect(() => compile(input)).toThrow();
+  t.throws(() => compile(input));
 });

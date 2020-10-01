@@ -1,7 +1,7 @@
-/* eslint-env jest */
-const compile = require('./compile.js');
+import test from 'ava';
+import { compile } from './_helpers.mjs';
 
-it('supports keyframes', () => {
+test('supports keyframes', t => {
   const input = `
 import style9 from 'style9';
 style9.keyframes({
@@ -14,11 +14,11 @@ style9.keyframes({
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('converts from', () => {
+test('converts from', t => {
   const input = `
 import style9 from 'style9';
 style9.keyframes({
@@ -29,11 +29,11 @@ style9.keyframes({
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('converts to', () => {
+test('converts to', t => {
   const input = `
 import style9 from 'style9';
 style9.keyframes({
@@ -44,11 +44,11 @@ style9.keyframes({
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('supports complex styles and times', () => {
+test('supports complex styles and times', t => {
   const input = `
 import style9 from 'style9';
 style9.keyframes({
@@ -60,11 +60,11 @@ style9.keyframes({
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('supports settings animationName directly', () => {
+test('supports settings animationName directly', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -80,6 +80,6 @@ styles.default
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });

@@ -1,5 +1,5 @@
-/* eslint-env jest */
-const processCSS = require('../src/process-css.js');
+import test from 'ava';
+import processCSS from '../src/process-css.js';
 
 const CASES = [{
   name: 'basic',
@@ -80,7 +80,7 @@ const CASES = [{
 }];
 
 for (const { name, input, expected } of CASES) {
-  it(name, () => {
-    expect(processCSS(input).css).toEqual(expected);
+  test(name, t => {
+    t.deepEqual(processCSS(input).css, expected);
   });
 }

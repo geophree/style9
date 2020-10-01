@@ -1,7 +1,7 @@
-/* eslint-env jest */
-const compile = require('./compile.js');
+import test from 'ava';
+import { compile } from './_helpers.mjs';
 
-it('does not minify by default', () => {
+test('does not minify by default', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -13,10 +13,10 @@ styles.default
   `;
   const { code } = compile(input);
 
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });
 
-it('does not minify styles', () => {
+test('does not minify styles', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -28,10 +28,10 @@ styles.default
   `;
   const { styles } = compile(input);
 
-  expect(styles).toMatchSnapshot();
+  t.snapshot(styles);
 });
 
-it('minifies known properties', () => {
+test('minifies known properties', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -43,10 +43,10 @@ styles.default
   `;
   const { code } = compile(input, { minifyProperties: true });
 
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });
 
-it('hashes unknown properties', () => {
+test('hashes unknown properties', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -58,10 +58,10 @@ styles.default
   `;
   const { code } = compile(input, { minifyProperties: true });
 
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });
 
-it('minifies nested properties', () => {
+test('minifies nested properties', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -77,5 +77,5 @@ styles.default
   `;
   const { code } = compile(input, { minifyProperties: true });
 
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });

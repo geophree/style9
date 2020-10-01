@@ -1,7 +1,7 @@
-/* eslint-env jest */
-const compile = require('./compile.js');
+import test from 'ava';
+import { compile } from './_helpers.mjs';
 
-it('supports nesting', () => {
+test('supports nesting', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -15,11 +15,11 @@ styles('default');
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('supports at rules', () => {
+test('supports at rules', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -33,11 +33,11 @@ styles('default');
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('supports deep nesting', () => {
+test('supports deep nesting', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -55,11 +55,11 @@ styles('default');
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('generates correct class names', () => {
+test('generates correct class names', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -78,11 +78,11 @@ styles('default', 'hidden');
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('translates old pseudo element', () => {
+test('translates old pseudo element', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -97,11 +97,11 @@ styles.default
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('throws in invalid nesting', () => {
+test('throws in invalid nesting', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -112,5 +112,5 @@ const styles = style9.create({
   }
 });
   `;
-  expect(() => compile(input)).toThrow();
+  t.throws(() => compile(input));
 });
