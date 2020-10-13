@@ -1,7 +1,7 @@
-/* eslint-env jest */
-const style9 = require('../index.js').default;
+import test from 'ava';
+import style9 from '../index.mjs';
 
-it('combines different properties', () => {
+test('combines different properties', t => {
   const input = {
     a: {
       foo: 'foo'
@@ -10,10 +10,10 @@ it('combines different properties', () => {
       bar: 'bar'
     }
   };
-  expect(style9(input.a, input.b)).toBe('foo bar');
+  t.deepEqual(style9(input.a, input.b), 'foo bar');
 });
 
-it('merges from right to left', () => {
+test('merges from right to left', t => {
   const input = {
     a: {
       foo: 'foo'
@@ -22,19 +22,19 @@ it('merges from right to left', () => {
       foo: 'bar'
     }
   };
-  expect(style9(input.a, input.b)).toBe('bar');
+  t.deepEqual(style9(input.a, input.b), 'bar');
 });
 
-it('ignores falsy values', () => {
+test('ignores falsy values', t => {
   const input = {
     a: {
       foo: 'foo'
     }
   };
-  expect(style9(input.a, false, undefined, null)).toBe('foo');
+  t.deepEqual(style9(input.a, false, undefined, null), 'foo');
 });
 
-it('handles nested objects', () => {
+test('handles nested objects', t => {
   const input = {
     a: {
       foo: 'foo',
@@ -46,10 +46,10 @@ it('handles nested objects', () => {
       foo: 'bar'
     }
   };
-  expect(style9(input.a, input.b)).toBe('bar baz');
+  t.deepEqual(style9(input.a, input.b), 'bar baz');
 });
 
-it('merges nested objects', () => {
+test('merges nested objects', t => {
   const input = {
     a: {
       foo: 'foo',
@@ -64,10 +64,10 @@ it('merges nested objects', () => {
       }
     }
   };
-  expect(style9(input.a, input.b)).toBe('bar biz');
+  t.deepEqual(style9(input.a, input.b), 'bar biz');
 });
 
-it('handles deeply nested objects', () => {
+test('handles deeply nested objects', t => {
   const input = {
     a: {
       foo: 'foo',
@@ -82,10 +82,10 @@ it('handles deeply nested objects', () => {
       foo: 'bar'
     }
   };
-  expect(style9(input.a, input.b)).toBe('bar baz bop');
+  t.deepEqual(style9(input.a, input.b), 'bar baz bop');
 });
 
-it('merges deeply nested objects', () => {
+test('merges deeply nested objects', t => {
   const input = {
     a: {
       foo: 'foo',
@@ -106,10 +106,10 @@ it('merges deeply nested objects', () => {
       }
     }
   };
-  expect(style9(input.a, input.b)).toBe('bar biz bip');
+  t.deepEqual(style9(input.a, input.b), 'bar biz bip');
 });
 
-it('merges several deeply nested objects', () => {
+test('merges several deeply nested objects', t => {
   const input = {
     a: {
       foo: 'foo',
@@ -136,10 +136,10 @@ it('merges several deeply nested objects', () => {
       }
     }
   };
-  expect(style9(input.a, input.b, input.c)).toBe('bup bap bip');
+  t.deepEqual(style9(input.a, input.b, input.c), 'bup bap bip');
 });
 
-it('does not modify objects', () => {
+test('does not modify objects', t => {
   const input = {
     a: {
       foo: 'foo',
@@ -162,5 +162,5 @@ it('does not modify objects', () => {
   };
   const clone = JSON.parse(JSON.stringify(input))
   style9(input.a, input.b);
-  expect(input).toEqual(clone);
+  t.deepEqual(input, clone);
 });

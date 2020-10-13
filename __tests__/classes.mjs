@@ -1,7 +1,7 @@
-/* eslint-env jest */
-const compile = require('./compile.js');
+import test from 'ava';
+import { compile } from './_helpers.mjs';
 
-it('string literals', () => {
+test('string literals', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -16,10 +16,10 @@ const styles = style9.create({
 styles('default', 'red');
   `;
   const { code } = compile(input);
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });
 
-it('moves test', () => {
+test('moves test', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -30,10 +30,10 @@ const styles = style9.create({
 styles(foo() && 'default');
   `;
   const { code } = compile(input);
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });
 
-it('ternary', () => {
+test('and', async t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -45,13 +45,31 @@ const styles = style9.create({
     color: 'red'
   }
 });
-styles(foo ? 'default' : 'red');
+styles('default', foo && 'red');
   `;
   const { code } = compile(input);
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });
 
-it('object', () => {
+test('ternary', t => {
+  const input = `
+import style9 from 'style9';
+const styles = style9.create({
+  default: {
+    color: 'blue',
+    opacity: 1
+  },
+  red: {
+    color: 'red'
+  }
+});
+styles(foo ? 'red' : 'default');
+  `;
+  const { code } = compile(input);
+  t.snapshot(code);
+});
+
+test('object', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -69,10 +87,10 @@ styles({
 });
   `;
   const { code } = compile(input);
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });
 
-it('mixed', () => {
+test('mixed', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -89,10 +107,10 @@ styles({
 }, 'red');
   `;
   const { code } = compile(input);
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });
 
-it('property access', () => {
+test('property access', t => {
   const input = `
 import style9 from 'style9';
 const styles1 = style9.create({
@@ -108,10 +126,10 @@ const styles2 = style9.create({
 style9(styles1.default, styles2.red)
   `;
   const { code } = compile(input);
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });
 
-it('hoists function call', () => {
+test('hoists function call', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -124,10 +142,10 @@ styles({
 })
   `;
   const { code } = compile(input);
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });
 
-it('supports destructuring assignment', () => {
+test('supports destructuring assignment', t => {
   const input = `
 import style9 from 'style9';
 const { blue } = style9.create({
@@ -138,10 +156,10 @@ const { blue } = style9.create({
 console.log(blue)
   `;
   const { code } = compile(input);
-  expect(code).toMatchSnapshot();
+  t.snapshot(code);
 });
 
-it('supports member expression access', () => {
+test('supports member expression access', t => {
   const input = `
 import style9 from 'style9';
 const blue = style9.create({
@@ -156,11 +174,11 @@ console.log(blue)
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('supports static bracket access', () => {
+test('supports static bracket access', t => {
   const input = `
 import style9 from 'style9';
 const blue = style9.create({
@@ -174,11 +192,11 @@ const blue = style9.create({
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('supports dynamic bracket access', () => {
+test('supports dynamic bracket access', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -192,11 +210,11 @@ const styles = style9.create({
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('supports spread assignment', () => {
+test('supports spread assignment', t => {
   const input = `
 import style9 from 'style9';
 const { ...styles } = style9.create({
@@ -207,11 +225,11 @@ const { ...styles } = style9.create({
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
 
-it('supports spread use', () => {
+test('supports spread use', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -223,6 +241,6 @@ console.log({ ...styles });
   `;
   const { code, styles } = compile(input);
 
-  expect(code).toMatchSnapshot();
-  expect(styles).toMatchSnapshot();
+  t.snapshot(code);
+  t.snapshot(styles);
 });
