@@ -34,6 +34,36 @@ test('ignores falsy values', t => {
   t.deepEqual(style9(input.a, false, undefined, null), 'foo');
 });
 
+test('ternary works as expected', t => {
+  const input = {
+    a: {
+      foo: 'foo'
+    },
+    b: {
+      foo: 'baz',
+      bar: 'bar'
+    }
+  };
+  const actual = x => style9(x ? input.a : input.b);
+  t.deepEqual(actual(true), 'foo');
+  t.deepEqual(actual(false), 'baz bar');
+});
+
+test('and works as expected', t => {
+  const input = {
+    a: {
+      foo: 'foo'
+    },
+    b: {
+      foo: 'baz',
+      bar: 'bar'
+    }
+  };
+  const actual = x => style9(input.b, x && input.a);
+  t.deepEqual(actual(true), 'foo bar');
+  t.deepEqual(actual(false), 'baz bar');
+});
+
 test('handles nested objects', t => {
   const input = {
     a: {
