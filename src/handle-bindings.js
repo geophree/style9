@@ -18,7 +18,7 @@ function getStyles(binding) {
 }
 
 function reduceStyles(styles, combineFunc, leafFunc,
-		{ atRules = [], pseudoSelectors = [] } = {}) {
+    { atRules = [], pseudoSelectors = [] } = {}) {
   return combineFunc(
     Object.entries(styles).map(([name, value]) => {
       if (!isNestedStyles(value)) {

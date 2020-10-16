@@ -49,7 +49,7 @@ function generateExpression(args, classObj) {
     // Remove duplicates
     .filter((prop, index, array) => array.indexOf(prop) === index);
 
-	const stringLiteralArgs = [];
+  const stringLiteralArgs = [];
   const conditionals = usedProps.map(prop => {
     const classes = Object.fromEntries(
       Object.entries(classObj).map(([key, val]) => [key, val[prop]])
@@ -60,8 +60,8 @@ function generateExpression(args, classObj) {
     if (conditionalArgs.length == 1) {
       const arg = conditionalArgs[0];
       if (t.isStringLiteral(arg)) {
-				stringLiteralArgs.push(arg.value);
-				return;
+        stringLiteralArgs.push(arg.value);
+        return;
       }
     }
 
