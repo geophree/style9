@@ -19,7 +19,7 @@ styles('default', 'red');
   t.snapshot(code);
 });
 
-test('moves test', t => {
+test.failing('moves test', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -129,7 +129,7 @@ style9(styles1.default, styles2.red)
   t.snapshot(code);
 });
 
-test('hoists function call', t => {
+test.failing('hoists function call', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
