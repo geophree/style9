@@ -32,7 +32,12 @@ const reduceNegations = (node) => {
 const createTestNormalizer = () => {
   const normalizedTests = new Map();
 
-  return function normalize(test) {
+  return function normalize(test, force) {
+    if (force) {
+      normalizedTests.set(test, force);
+      return force;
+    }
+
     let value = normalizedTests.get(test);
     if (!value) {
       const newValue = reduceNegations(test);
@@ -57,14 +62,17 @@ const compareValues = (a, b) => {
 
 const checkSeen = (normalize, seenTests, test) => {
   const value = normalize(test);
-  if (seenTests.get(value.node)) return { seen: true, seenNegated: false };
+  if (seenTests.get(value.node)) return { seen: true, seenNegated: false, value };
   for (let seenValue of seenTests.values()) {
     const { equal, negated } = compareValues(value, seenValue);
-    if (equal) return { seen: true, seenNegated: false };
-    if (negated) return { seen: false, seenNegated: true };
+    if (equal) {
+      normalize(test, seenValue);
+      return { seen: true, seenNegated: false, value: seenValue };
+    }
+    if (negated) return { seen: false, seenNegated: true, value };
   }
   seenTests.set(value.node, value);
-  return { seen: false, seenNegated: false };
+  return { seen: false, seenNegated: false, value };
 };
 
 
@@ -82,14 +90,14 @@ function getConditionalArgs(args, { classes, normalize }) {
     if (!cls) continue;
 
     if (test) {
-      const { seen, seenNegated} = checkSeen(normalize, seenTests, test);
+      const { seen, seenNegated, value } = checkSeen(normalize, seenTests, test);
       // Don't add an arg with a test we've seen
       // if we make it there it'll never be true.
       if (seen) continue;
       // Treat an arg with a test we've seen negated as no-test
       // if we make it there it'll never be false.
       if (!seenNegated) {
-        newArgs.push({ test, value: cls });
+        newArgs.push({ test: value.node, value: cls });
         continue;
       }
     }
