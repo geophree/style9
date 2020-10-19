@@ -1,24 +1,5 @@
 const t = require('@babel/types');
 
-/*
-
-pass in Map that maps `test`s to a Map that says which `test`s they are
-equivalent to (share by equivalent `test`s), and also opposite of.
-Keep list of unique `test`s (omit opposites) to test against
-Track number of `!`s to tack oppositeness.
-use t.isNodesEquivalent(node1, node2)
-
-We can:
-remove subsequent args with same `test`
-if we've seen `test` or `!test`, the other becomes no-test.
-
-After generating all ternaries, we can:
-combine ones with the same `test`, and concat string literals
-
-TODO(geophree): do we need to clone the `test`s?
-Maybe when we generate conditionals?
-*/
-
 const isNegation = (node) => t.isUnaryExpression(node) && node.operator === '!' && node.prefix;
 
 const reduceNegations = (node) => {
@@ -118,46 +99,98 @@ function getConditionalArgs(args, { classes, normalize }) {
   return newArgs;
 }
 
-function generateExpression(args, classObj) {
+function newClassExpressionData() {
+  return { literals: [], conditionals: new Map()};
+}
+
+function findOrCreateConditional(currentCed, test, normalize) {
+  const { conditionals } = currentCed;
+  let conditional = conditionals.get(test);
+  if (conditional) return conditional;
+
+  for (let [key, value] of conditionals) {
+    if (t.isNodesEquivalent(test, key)) {
+      normalize(test, { node: key });
+      return value;
+    }
+  }
+
+  conditional = {
+    consequent: newClassExpressionData(),
+    alternate: newClassExpressionData()
+  };
+  conditionals.set(test, conditional);
+
+  return conditional;
+}
+
+function buildClassExpressionData(args, classObj) {
   const usedProps = Object.values(classObj)
     .flatMap(obj => Object.keys(obj))
     // Remove duplicates
     .filter((prop, index, array) => array.indexOf(prop) === index);
 
-  const stringLiteralArgs = [];
   const normalize = createTestNormalizer();
-  const conditionals = usedProps.map(prop => {
+  const classExpressionData = newClassExpressionData();
+  for (const prop of usedProps) {
     const classes = Object.fromEntries(
       Object.entries(classObj).map(([key, val]) => [key, val[prop]])
     );
 
     const conditionalArgs = getConditionalArgs(args, { classes, normalize });
-    if (!conditionalArgs.length) return;
-    const { value: lastArg } = conditionalArgs.pop();
-    if (conditionalArgs.length == 0) {
-      stringLiteralArgs.push(lastArg);
-      return;
+    let currentCed = classExpressionData;
+    for (let { test, value } of conditionalArgs) {
+      let target = currentCed;
+      if (test) {
+        const normalized = normalize(test);
+        test = normalized.node;
+        const negation = normalized.negation;
+        if (negation) test = negation;
+        const conditional =
+          findOrCreateConditional(currentCed, test, normalize);
+        target = conditional.consequent;
+        currentCed = conditional.alternate;
+        if (negation) [target, currentCed] = [currentCed, target];
+      }
+      // TODO(geophree): count uses of each class so we can minimize them
+      if (value) target.literals.push(value);
     }
-
-    return conditionalArgs.reduceRight(
-      (acc, {test, value}) => t.conditionalExpression(
-        test,
-        t.stringLiteral(value + ' '),
-        acc
-      ),
-      t.stringLiteral(lastArg ? lastArg + ' ' : '')
-    );
-  }).filter(Boolean);
-
-  if (stringLiteralArgs.length) {
-    conditionals.push(t.stringLiteral(stringLiteralArgs.join(' ') + ' '));
   }
 
-  const additions = conditionals.reduceRight((acc, expr) => {
-    return t.binaryExpression('+', expr, acc)
-  });
+  return classExpressionData;
+}
 
-  return t.expressionStatement(additions);
+function buildClassExpression({ literals, conditionals }, usedTests) {
+  const initial = []
+  if (literals.length) {
+    initial.push(t.stringLiteral(literals.join(' ') + ' '));
+  } else if (!conditionals.size) {
+    initial.push(t.stringLiteral(''));
+  }
+
+  return Array.from(conditionals.entries()).map(
+    ([test, branches]) => buildConditionalExpression(test, branches, usedTests)
+  ).reduce(
+    (exp1, exp2) => t.binaryExpression('+', exp1, exp2),
+    ...initial
+  );
+}
+
+function buildConditionalExpression(test, branches, usedTests) {
+  const { consequent, alternate } = branches;
+  const needsClone = usedTests.get(test);
+  const maybeClonedTest = needsClone ? t.cloneNode(test) : test;
+  if (needsClone) usedTests.set(test, true);
+  return t.conditionalExpression(
+    maybeClonedTest,
+    buildClassExpression(consequent, usedTests),
+    buildClassExpression(alternate, usedTests)
+  );
+}
+
+function generateExpression(args, classObj) {
+  const classExpressionData = buildClassExpressionData(args, classObj);
+  return buildClassExpression(classExpressionData, new Map());
 }
 
 module.exports = generateExpression;

@@ -30,7 +30,17 @@ const styles = style9.create({
 styles(foo() && 'default');
   `;
   const { code } = compile(input);
-  t.snapshot(code);
+  const expected = `import style9 from 'style9';
+const styles = {
+  default: {
+    color: "c3hvvfmt"
+  }
+};
+
+const _foo = foo();
+
+_foo ? "c3hvvfmt " : "";`;
+  t.deepEqual(code, expected);
 });
 
 test('and', async t => {
@@ -142,7 +152,17 @@ styles({
 })
   `;
   const { code } = compile(input);
-  t.snapshot(code);
+  const expected = `import style9 from 'style9';
+const styles = {
+  default: {
+    color: "c3hvvfmt"
+  }
+};
+
+const _foo = foo();
+
+_foo ? "c3hvvfmt " : "";`;
+  t.deepEqual(code, expected);
 });
 
 test('supports destructuring assignment', t => {
