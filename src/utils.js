@@ -34,7 +34,7 @@ function normalizeValue(prop, value) {
   return value;
 }
 
-// Avoid vowels so we don't make words.
+// Avoid vowels (aeiouy) so we don't make words.
 const VOWEL_MAP = {a: 'w', e: 'x', i: 'z', o: '_', u: '-'};
 
 function base32NoVowels(num) {
