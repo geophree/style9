@@ -19,7 +19,7 @@ styles('default', 'red');
   t.snapshot(code);
 });
 
-test('moves test', t => {
+test.failing('moves test', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -30,7 +30,17 @@ const styles = style9.create({
 styles(foo() && 'default');
   `;
   const { code } = compile(input);
-  t.snapshot(code);
+  const expected = `import style9 from 'style9';
+const styles = {
+  default: {
+    color: "c3hvvfmt"
+  }
+};
+
+const _foo = foo();
+
+_foo ? "c3hvvfmt " : "";`;
+  t.deepEqual(code, expected);
 });
 
 test('and', async t => {
@@ -129,7 +139,7 @@ style9(styles1.default, styles2.red)
   t.snapshot(code);
 });
 
-test('hoists function call', t => {
+test.failing('hoists function call', t => {
   const input = `
 import style9 from 'style9';
 const styles = style9.create({
@@ -142,7 +152,17 @@ styles({
 })
   `;
   const { code } = compile(input);
-  t.snapshot(code);
+  const expected = `import style9 from 'style9';
+const styles = {
+  default: {
+    color: "c3hvvfmt"
+  }
+};
+
+const _foo = foo();
+
+_foo ? "c3hvvfmt " : "";`;
+  t.deepEqual(code, expected);
 });
 
 test('supports destructuring assignment', t => {

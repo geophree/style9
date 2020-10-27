@@ -1,6 +1,10 @@
 import babel from '@babel/core';
 import plugin from '../babel.js';
 
+import style9 from '../index.mjs';
+
+export { style9 };
+
 const btoa = (str) => Buffer.from(str.toString(), 'binary').toString('base64');
 
 export const compile = (input, opts = {}) => {
@@ -17,6 +21,15 @@ export const getModule = async (code) => {
   return await import(`data:text/javascript;base64,${btoa(input)}`);
 };
 
+export const normalizeClasses = classes => {
+  const norm = classes.trim().split(' ').filter(Boolean);
+  norm.sort();
+  return norm;
+};
+
+export const assertSameClasses = (t, actual, expected, message) => {
+  t.deepEqual(normalizeClasses(actual), normalizeClasses(expected), message);
+}
 // code for testing using data url es module
 //export const getClasses = (a) => styles(a ? 'red' : 'default');
 //export const test2 = (a) => style9(a ? styles.red : styles.default);
